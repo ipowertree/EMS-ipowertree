@@ -10,38 +10,29 @@ function HomePage() {
             <img src="../Images/mainlogo.png" alt="logo" />
           </div>
           <ul>
-            <li>
-              {/* Empty list item */}
-            </li>
+            <li>{/* Empty list item */}</li>
           </ul>
         </nav>
       </div>
       <div id="bgimg">
         <div id="login">
-          <a href="/login" className="login-button">LOGIN</a>
+          <a href="/login" className="login-button">
+            LOGIN
+          </a>
         </div>
       </div>
 
       <div id="section">
-        <h1>ABOUT US</h1>
+        {/* <h1>ABOUT US</h1> */}
         <p>
-          We are a Gandhinagar based Sustainable Technology Innovation Company
-          incubated at Pandit Deendayal Petroleum University and supported by
-          Industries Commissionerate (IC) Department, Government of Gujarat
-          under Start-up/Innovation Scheme.
-        </p>
-        <p>
-          We invent, designs, engineers and manufactures Solar Tree which
-          incorporate beautiful, efficient solar panels in sculptural forms
-          designed to inspire, to generate electricity along with saving huge
-          space consumption problem. We have 16 design patents in our name for
-          various innovative designs of Solar Tree. We also have received
-          multiple recognition and awards from various national and
-          international organization in last two year including Unites Nations
-          top 100 Startup of the world, Top 10 Startups of India by Bombay Stock
-          Exchange and others.
+          Imagine Powertree Pvt Ltd is a Gandhinagar-based sustainable technology innovation company. 
+          We specialize in the design, engineering, and manufacturing of Solar Trees that efficiently generate 
+          electricity while saving space. Our innovative designs have earned us 16 design patents and numerous 
+          recognitions, including being named among the United Nations' top 100 startups and the top 10 startups 
+          in India by the Bombay Stock Exchange.
         </p>
       </div>
+
 
       <div id="map-container">
         <iframe
@@ -51,6 +42,7 @@ function HomePage() {
           title="map"
         ></iframe>
       </div>
+      
     </div>
   );
 }
