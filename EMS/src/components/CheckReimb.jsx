@@ -46,13 +46,18 @@ const CheckReimb = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this reimbursement application?");
     if (confirmDelete) {
       try {
-        await axios.delete(`https://ipowertree.onrender.com/reimbursements/${id}`);
+        await axios.delete(`https://ipowertree.onrender.com/reimbursements/${id}`, {
+          headers: {
+            'Access-Control-Allow-Origin': 'https://ipower.vercel.app',
+          }
+        });
         navigate("/homea/reimba");
       } catch (error) {
         console.error("Error deleting reimbursement:", error);
       }
     }
   };
+  
 
   if (loading) {
     return <div className="loading">Loading...</div>;

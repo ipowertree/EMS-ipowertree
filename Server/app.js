@@ -29,11 +29,21 @@ const app = express();
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
+
 app.use(cors({
-  origin: 'https://ipower.vercel.app', // Allow only your frontend URL
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  origin: 'https://ipower.vercel.app', // or '*' to allow all origins
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS', 'PATCH', 'HEAD', 'CONNECT'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://ipower.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 
 app.use((req, res, next) => {
   res.cookie('token', 'your-token-value', {
@@ -607,20 +617,18 @@ app.delete('/reimbursements/:id', async (req, res) => {
     // Delete the uploaded proofs
     if (reimbursement.proofs && reimbursement.proofs.length > 0) {
       for (const proof of reimbursement.proofs) {
-        // Ensure the proof is just the filename, not the full path
         const proofFilename = path.basename(proof);
         const filePath = path.join(__dirname, 'uploads', proofFilename);
 
         console.log(`Attempting to delete file: ${filePath}`); // Log the file path for debugging
 
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(`Error deleting file ${filePath}:`, err);
-            return res.status(500).send({ message: `Error deleting file ${filePath}: ${err.message}` });
-          } else {
-            console.log(`Successfully deleted file: ${filePath}`);
-          }
-        });
+        try {
+          fs.unlinkSync(filePath);
+          console.log(`Successfully deleted file: ${filePath}`);
+        } catch (err) {
+          console.error(`Error deleting file ${filePath}:`, err);
+          return res.status(500).send({ message: `Error deleting file ${filePath}: ${err.message}` });
+        }
       }
     }
 
@@ -633,6 +641,7 @@ app.delete('/reimbursements/:id', async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 });
+
 
 app.get('/reimbursements', async (req, res) => {
   try {
@@ -836,15 +845,15 @@ app.delete('/clientDocuments/:uid/:docId', async (req, res) => {
     }
 
     // Remove files from the file system
-    document.docs.forEach(docPath => {
-      fs.unlink(docPath, (err) => {
-        if (err) {
-          console.error(`Error deleting file: ${docPath}`, err);
-        } else {
-          console.log(`Successfully deleted file: ${docPath}`);
-        }
-      });
-    });
+    for (const docPath of document.docs) {
+      try {
+        fs.unlinkSync(docPath);
+        console.log(`Successfully deleted file: ${docPath}`);
+      } catch (err) {
+        console.error(`Error deleting file: ${docPath}`, err);
+        return res.status(500).json({ message: `Error deleting file: ${docPath}` });
+      }
+    }
 
     await ClientDocument.deleteOne({ _id: docId }); // Properly remove the document from the database
     res.status(200).json({ message: 'Document deleted successfully' });
