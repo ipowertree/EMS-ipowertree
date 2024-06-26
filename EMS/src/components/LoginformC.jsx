@@ -8,24 +8,25 @@ function LoginformC() {
     uid: "",
     password: "",
   });
-  const [loginData, setLoginData] = useState([]);
-  const navigate = useNavigate();
-  localStorage.removeItem("isLoggedIn");
-  window.localStorage.removeItem("isLoggedIn");
-  axios.defaults.withCredentials = true;
+  // const [loginData, setLoginData] = useState([]);
+  // const navigate = useNavigate();
+  // localStorage.removeItem("isLoggedIn");
+  // window.localStorage.removeItem("isLoggedIn");
+  // axios.defaults.withCredentials = true;
 
-  useEffect(() => {
-    const fetchAllAdmin = async () => {
-      try {
-        const res = await axios.get("https://ipowertree.onrender.com/clients");
-        setLoginData(res.data);
-        console.log(res);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchAllAdmin();
-  }, []);
+  // useEffect(() => {
+  //   const fetchAllAdmin = async () => {
+  //     try {
+  //       const res = await axios.get("https://ipowertree.onrender.com/clients");
+  //       setLoginData(res.data);
+  //       console.log(res);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   fetchAllAdmin();
+  // }, []);
+  const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
     e.preventDefault();
