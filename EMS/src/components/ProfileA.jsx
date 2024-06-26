@@ -6,7 +6,8 @@ function ProfileA() {
   const [loginData, setLoginData] = useState([]);
   const [adminData, setAdminData] = useState({
     uid: "",
-    password: "",
+    name: "",
+    position: "",
   });
 
   useEffect(() => {
@@ -46,7 +47,9 @@ function ProfileA() {
                   <div className="form-group-pa mb-3">
                     <label><b>Unique Id: </b> {adminData.uid}</label>
                     <br />
-                    <label><b>Password: </b> {adminData.password}</label>
+                    <label><b>Name: </b> {adminData.name}</label>
+                    <br />
+                    <label><b>Position: </b> {adminData.position}</label>
                   </div>
                 </form>
               </div>
