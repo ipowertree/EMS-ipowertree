@@ -614,35 +614,15 @@ app.delete('/reimbursements/:id', async (req, res) => {
 
     console.log("Deleting reimbursement:", reimbursement);
 
-    // Delete the uploaded proofs
-    if (reimbursement.proofs && reimbursement.proofs.length > 0) {
-      for (const proof of reimbursement.proofs) {
-        const proofFilename = path.basename(proof);
-        const filePath = path.join(__dirname, 'uploads', proofFilename);
-
-        console.log(`Attempting to delete file: ${filePath}`); // Log the file path for debugging
-
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(`Error deleting file ${filePath}:`, err);
-            return res.status(500).send({ message: `Error deleting file ${filePath}: ${err.message}` });
-          } else {
-            console.log(`Successfully deleted file: ${filePath}`);
-          }
-        });
-      }
-    }
-
     // Delete the reimbursement entry
     await Reimbursement.findByIdAndDelete(req.params.id);
-    console.log("Successfully deleted reimbursement and associated files");
+    console.log("Successfully deleted reimbursement");
     res.status(200).send('Reimbursement deleted');
   } catch (error) {
     console.error("Error deleting reimbursement:", error);
     res.status(500).send({ message: error.message });
   }
 });
-
 
 app.get('/reimbursements', async (req, res) => {
   try {
@@ -845,25 +825,15 @@ app.delete('/clientDocuments/:uid/:docId', async (req, res) => {
       return res.status(404).json({ message: 'Document not found' });
     }
 
-    // Remove files from the file system
-    for (const docPath of document.docs) {
-      try {
-        fs.unlinkSync(docPath);
-        console.log(`Successfully deleted file: ${docPath}`);
-      } catch (err) {
-        console.error(`Error deleting file: ${docPath}`, err);
-        return res.status(500).json({ message: `Error deleting file: ${docPath}` });
-      }
-    }
-
-    await ClientDocument.deleteOne({ _id: docId }); // Properly remove the document from the database
+    // Delete the document entry
+    await ClientDocument.deleteOne({ _id: docId });
+    console.log("Successfully deleted document");
     res.status(200).json({ message: 'Document deleted successfully' });
   } catch (err) {
     console.error('Error deleting document:', err);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 app.get('/overtime', async (req, res) => {
   try {
