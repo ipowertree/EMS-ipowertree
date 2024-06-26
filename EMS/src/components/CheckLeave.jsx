@@ -120,11 +120,11 @@ const CheckLeave = () => {
         </div>
         <div className="cardcrl-footer">
           <div className="button-groupcrl">
-          {leave.status === 'Pending' && adminId === 'A001' && (
+          {leave.status === 'Pending by Sr. Manager' && adminId === 'A004' && (
             <>
               <button
                 className="btn btn-warningcrl"
-                onClick={() => handleStatusChange(leave._id, 'Second Level Pending')}
+                onClick={() => handleStatusChange(leave._id, 'Pending by COO')}
               >
                 Send for Approval
               </button>
@@ -136,7 +136,7 @@ const CheckLeave = () => {
               </button>
             </>
           )}
-          {leave.status === 'Second Level Pending' && adminId === 'A002' && (
+          {leave.status === 'Pending by COO' && adminId === 'A003' && (
             <>
               <button
                 className="btn btn-successcr"

@@ -9,7 +9,7 @@ const LeaveA = () => {
   const [error, setError] = useState(null);
   const currentUser = window.localStorage.getItem("uid");
 
-  const initialFilter = currentUser === "A002" ? "Second Level Pending" : currentUser === "A001" ? "Pending" : "All";
+  const initialFilter = currentUser === "A003" ? "Pending by COO" : currentUser === "A004" ? "Pending by Sr. Manager" : "All";
   const [statusFilter, setStatusFilter] = useState(initialFilter);
   const [timePeriodFilter, setTimePeriodFilter] = useState("All");
   const [paymentTypeFilter, setPaymentTypeFilter] = useState("All");
@@ -112,10 +112,10 @@ const LeaveA = () => {
                   Filter by Status: {statusFilter}
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="dropdownStatusButton">
-                  <li><button className={`dropdown-item ${statusFilter === "Pending" && "active"}`} onClick={() => setStatusFilter("Pending")}>Pending</button></li>
+                  <li><button className={`dropdown-item ${statusFilter === "Pending by Sr. Manager" && "active"}`} onClick={() => setStatusFilter("Pending by Sr. Manager")}>Pending by Sr. Manager</button></li>
                   <li><button className={`dropdown-item ${statusFilter === "Approved" && "active"}`} onClick={() => setStatusFilter("Approved")}>Approved</button></li>
                   <li><button className={`dropdown-item ${statusFilter === "Rejected" && "active"}`} onClick={() => setStatusFilter("Rejected")}>Rejected</button></li>
-                  <li><button className={`dropdown-item ${statusFilter === "Second Level Pending" && "active"}`} onClick={() => setStatusFilter("Second Level Pending")}>Second Level Pending</button></li>
+                  <li><button className={`dropdown-item ${statusFilter === "Pending by COO" && "active"}`} onClick={() => setStatusFilter("Pending by COO")}>Pending by COO</button></li>
                   <li><button className={`dropdown-item ${statusFilter === "All" && "active"}`} onClick={() => setStatusFilter("All")}>All</button></li>
                 </ul>
               </div>

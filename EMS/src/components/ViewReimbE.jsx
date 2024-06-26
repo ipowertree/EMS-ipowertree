@@ -118,7 +118,7 @@ function ViewReimbE() {
               </button>
             </li>
             <li>
-              <button className={`dropdown-item ${statusFilter === "Pending" && "active"}`} onClick={() => setStatusFilter("Pending")}>
+              <button className={`dropdown-item ${statusFilter === "Pending by Accountant" && "active"}`} onClick={() => setStatusFilter("Pending by Accountant")}>
                 Pending
               </button>
             </li>

@@ -7,7 +7,7 @@ const ReimbursementA = () => {
   const [reimbursements, setReimbursements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("Pending");
+  const [statusFilter, setStatusFilter] = useState("Pending by Accountant");
   const [timeFilter, setTimeFilter] = useState("All");
   const [employeeFilter, setEmployeeFilter] = useState("");
   const [expenseTypeFilter, setExpenseTypeFilter] = useState("");
@@ -31,12 +31,12 @@ const ReimbursementA = () => {
   }, []);
 
   useEffect(() => {
-    if (adminId === "A001") {
-      setStatusFilter("Pending");
-    } else if (adminId === "A002") {
-      setStatusFilter("Second Level Pending");
+    if (adminId === "A005") {
+      setStatusFilter("Pending by Accountant");
     } else if (adminId === "A003") {
-      setStatusFilter("Third Level Pending");
+      setStatusFilter("Pending by COO");
+    } else if (adminId === "A001") {
+      setStatusFilter("Pending by CEO");
     }
   }, [adminId]);
 
@@ -64,20 +64,20 @@ const ReimbursementA = () => {
     // Filter by status
     const isInStatusFilter =
       statusFilter === "All" ||
-      (adminId === "A001" &&
-        (statusFilter === "Pending" || statusFilter === "On Hold by Admin 1") &&
-        (reimbursement.status === "Pending" ||
-          reimbursement.status === "On Hold by Admin 1")) ||
-      (adminId === "A002" &&
-        (statusFilter === "Second Level Pending" ||
-          statusFilter === "On Hold by Admin 2") &&
-        (reimbursement.status === "Second Level Pending" ||
-          reimbursement.status === "On Hold by Admin 2")) ||
+      (adminId === "A005" &&
+        (statusFilter === "Pending by Accountant" || statusFilter === "On Hold by Accountant") &&
+        (reimbursement.status === "Pending by Accountant" ||
+          reimbursement.status === "On Hold by Accountant")) ||
       (adminId === "A003" &&
-        (statusFilter === "Third Level Pending" ||
-          statusFilter === "On Hold by Admin 3") &&
-        (reimbursement.status === "Third Level Pending" ||
-          reimbursement.status === "On Hold by Admin 3")) ||
+        (statusFilter === "Pending by COO" ||
+          statusFilter === "On Hold by COO") &&
+        (reimbursement.status === "Pending by COO" ||
+          reimbursement.status === "On Hold by COO")) ||
+      (adminId === "A001" &&
+        (statusFilter === "Pending by CEO" ||
+          statusFilter === "On Hold by CEO") &&
+        (reimbursement.status === "Pending by CEO" ||
+          reimbursement.status === "On Hold by CEO")) ||
       reimbursement.status === statusFilter;
 
     // Filter by employee name
@@ -188,42 +188,22 @@ const ReimbursementA = () => {
                         Rejected
                       </button>
                     </li>
-                    {adminId === "A001" && (
+                    {adminId === "A005" && (
                       <>
                         <li>
                           <button
-                            className={`dropdown-item ${statusFilter === "Pending" && "active"}`}
-                            onClick={() => setStatusFilter("Pending")}
+                            className={`dropdown-item ${statusFilter === "Pending by Accountant" && "active"}`}
+                            onClick={() => setStatusFilter("Pending by Accountant")}
                           >
-                            Pending
+                            Pending by Accountant
                           </button>
                         </li>
                         <li>
                           <button
-                            className={`dropdown-item ${statusFilter === "On Hold by Admin 1" && "active"}`}
-                            onClick={() => setStatusFilter("On Hold by Admin 1")}
+                            className={`dropdown-item ${statusFilter === "On Hold by Accountant" && "active"}`}
+                            onClick={() => setStatusFilter("On Hold by Accountant")}
                           >
-                            On Hold by Admin 1
-                          </button>
-                        </li>
-                      </>
-                    )}
-                    {adminId === "A002" && (
-                      <>
-                        <li>
-                          <button
-                            className={`dropdown-item ${statusFilter === "Second Level Pending" && "active"}`}
-                            onClick={() => setStatusFilter("Second Level Pending")}
-                          >
-                            Second Level Pending
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className={`dropdown-item ${statusFilter === "On Hold by Admin 2" && "active"}`}
-                            onClick={() => setStatusFilter("On Hold by Admin 2")}
-                          >
-                            On Hold by Admin 2
+                            On Hold by Accountant
                           </button>
                         </li>
                       </>
@@ -232,18 +212,38 @@ const ReimbursementA = () => {
                       <>
                         <li>
                           <button
-                            className={`dropdown-item ${statusFilter === "Third Level Pending" && "active"}`}
-                            onClick={() => setStatusFilter("Third Level Pending")}
+                            className={`dropdown-item ${statusFilter === "Pending by COO" && "active"}`}
+                            onClick={() => setStatusFilter("Pending by COO")}
                           >
-                            Third Level Pending
+                            Pending by COO
                           </button>
                         </li>
                         <li>
                           <button
-                            className={`dropdown-item ${statusFilter === "On Hold by Admin 3" && "active"}`}
-                            onClick={() => setStatusFilter("On Hold by Admin 3")}
+                            className={`dropdown-item ${statusFilter === "On Hold by COO" && "active"}`}
+                            onClick={() => setStatusFilter("On Hold by COO")}
                           >
-                            On Hold by Admin 3
+                            On Hold by COO
+                          </button>
+                        </li>
+                      </>
+                    )}
+                    {adminId === "A001" && (
+                      <>
+                        <li>
+                          <button
+                            className={`dropdown-item ${statusFilter === "Pending by CEO" && "active"}`}
+                            onClick={() => setStatusFilter("Pending by CEO")}
+                          >
+                            Pending by CEO
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className={`dropdown-item ${statusFilter === "On Hold by CEO" && "active"}`}
+                            onClick={() => setStatusFilter("On Hold by CEO")}
+                          >
+                            On Hold by CEO
                           </button>
                         </li>
                       </>

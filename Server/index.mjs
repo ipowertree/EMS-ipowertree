@@ -77,7 +77,7 @@ const individualAttendanceSchema = new mongoose.Schema({
     endDate: { type: Date, required: true },
     reason: { type: String, required: true },
     totalDays: { type: Number, required: true }, 
-    status: { type: String, required: true, default: "Pending" },
+    status: { type: String, required: true, default: "Pending by Sr. Manager" },
     review: { type: String},
     leavePaymentType: { type: String}, // Add this field
   });
@@ -101,7 +101,7 @@ const individualAttendanceSchema = new mongoose.Schema({
     totalKms: { type: Number },
     totalExpense: { type: Number },
     gstType: { type: String, required: true },
-    status: { type: String, default: "Pending" },
+    status: { type: String, default: "Pending by Accountant" },
     review: { type: String} 
   });
 
