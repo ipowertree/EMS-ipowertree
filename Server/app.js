@@ -622,13 +622,14 @@ app.delete('/reimbursements/:id', async (req, res) => {
 
         console.log(`Attempting to delete file: ${filePath}`); // Log the file path for debugging
 
-        try {
-          fs.unlinkSync(filePath);
-          console.log(`Successfully deleted file: ${filePath}`);
-        } catch (err) {
-          console.error(`Error deleting file ${filePath}:`, err);
-          return res.status(500).send({ message: `Error deleting file ${filePath}: ${err.message}` });
-        }
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(`Error deleting file ${filePath}:`, err);
+            return res.status(500).send({ message: `Error deleting file ${filePath}: ${err.message}` });
+          } else {
+            console.log(`Successfully deleted file: ${filePath}`);
+          }
+        });
       }
     }
 
