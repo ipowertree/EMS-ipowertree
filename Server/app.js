@@ -37,22 +37,22 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://ipower.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', 'https://ipower.vercel.app');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   next();
+// });
 
 
-app.use((req, res, next) => {
-  res.cookie('token', 'your-token-value', {
-    httpOnly: true,
-    secure: true, // Set to true if using HTTPS
-    sameSite: 'None'
-  });
-  next();
-});
+// app.use((req, res, next) => {
+//   res.cookie('token', 'your-token-value', {
+//     httpOnly: true,
+//     secure: true, // Set to true if using HTTPS
+//     sameSite: 'None'
+//   });
+//   next();
+// });
 
 
 app.get("/login", (req,res) => {
