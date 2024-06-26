@@ -16,7 +16,7 @@ function LoginformE() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://ems-imagine.onrender.com/loginforme", lformData);
+      const res = await axios.post("https://ipowertree.onrender.com/loginforme", lformData);
       if (res.data.status === 'success') {
         window.localStorage.setItem("isLoggedIn", true);
         window.localStorage.setItem("uid", lformData.uid);
