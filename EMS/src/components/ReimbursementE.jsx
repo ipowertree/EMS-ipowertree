@@ -101,8 +101,11 @@ const ReimbursementE = () => {
 
       const response = await axios.post(
         "https://ipowertree.onrender.com/reimbursement",
-        data
-      );
+        data,{
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
       console.log(response.data);
       alert("Form submitted successfully!");
       setFormData({
