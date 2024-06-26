@@ -82,10 +82,7 @@ function LoginformC() {
       <div className="d-flex justify-content-center align-items-center vh-100 loginPage">
       <div className="p-3 rounded border loginForm">
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              validate(lformData, loginData);
-            }}
+            onSubmit={handleSubmit}
           >
             <h2 className="center-align text-white">CLIENT</h2>
             <div className="mb-3">
