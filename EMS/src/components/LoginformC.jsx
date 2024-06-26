@@ -17,7 +17,7 @@ function LoginformC() {
   useEffect(() => {
     const fetchAllAdmin = async () => {
       try {
-        const res = await axios.get("https://ems-imagine.onrender.com/clients");
+        const res = await axios.get("https://ipowertree.onrender.com/clients");
         setLoginData(res.data);
         console.log(res);
       } catch (err) {
