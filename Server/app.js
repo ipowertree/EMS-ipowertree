@@ -620,7 +620,7 @@ app.delete('/reimbursements/:id', async (req, res) => {
     res.status(200).send('Reimbursement deleted');
   } catch (error) {
     console.error("Error deleting reimbursement:", error);
-    res.status(500).send({ message: error.message });
+    res.status(500).send({ message: 'Internal Server Error', error: error.message });
   }
 });
 
@@ -831,9 +831,10 @@ app.delete('/clientDocuments/:uid/:docId', async (req, res) => {
     res.status(200).json({ message: 'Document deleted successfully' });
   } catch (err) {
     console.error('Error deleting document:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: 'Internal Server Error', error: err.message });
   }
 });
+
 
 app.get('/overtime', async (req, res) => {
   try {
