@@ -35,6 +35,16 @@ app.use(cors({
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
 
+app.use((req, res, next) => {
+  res.cookie('token', 'your-token-value', {
+    httpOnly: true,
+    secure: true, // Set to true if using HTTPS
+    sameSite: 'None'
+  });
+  next();
+});
+
+
 app.get("/login", (req,res) => {
   res.status(200).json({message: "Login Page"});
 });
