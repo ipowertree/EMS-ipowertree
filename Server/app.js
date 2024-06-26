@@ -30,7 +30,7 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: 'https://ipower.vercel.app/', // Allow only your frontend URL
+  origin: 'https://ipower.vercel.app', // Allow only your frontend URL
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
