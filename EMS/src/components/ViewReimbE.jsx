@@ -13,7 +13,7 @@ function ViewReimbE() {
   useEffect(() => {
     const fetchReimbursements = async () => {
       try {
-        const response = await axios.get(`http://localhost:8001/reimbursement/${uid}`);
+        const response = await axios.get(`https://ipowertree.onrender.com/reimbursement/${uid}`);
         setReimbursements(response.data);
       } catch (error) {
         console.error("Error fetching reimbursements:", error);

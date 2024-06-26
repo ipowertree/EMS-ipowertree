@@ -16,7 +16,7 @@ function Overtime() {
   }, [uid]);
 
   const fetchOvertimeData = () => {
-    axios.get(`http://localhost:8001/overtime/employee/${uid}`)
+    axios.get(`https://ipowertree.onrender.com/overtime/employee/${uid}`)
       .then(response => {
         setOvertimeData(response.data);
         setLoading(false);
@@ -34,7 +34,7 @@ function Overtime() {
     }
 
     const newOvertime = { uid, date, hours, description };
-    axios.post("http://localhost:8001/overtime", newOvertime)
+    axios.post("https://ipowertree.onrender.com/overtime", newOvertime)
       .then(response => {
         fetchOvertimeData();
         setDate("");
@@ -50,7 +50,7 @@ function Overtime() {
   // const handleDeleteOvertime = (id) => {
   //   const confirmDelete = window.confirm("Are you sure you want to delete this overtime record?");
   //   if (confirmDelete) {
-  //     axios.delete(`http://localhost:8001/overtime/${id}`)
+  //     axios.delete(`https://ipowertree.onrender.com/overtime/${id}`)
   //       .then(response => {
   //         setOvertimeData(overtimeData.filter(record => record._id !== id));
   //         window.alert("Overtime record deleted successfully!");

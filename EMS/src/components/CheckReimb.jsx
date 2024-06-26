@@ -16,7 +16,7 @@ const CheckReimb = () => {
   useEffect(() => {
     const fetchReimbursement = async () => {
       try {
-        const response = await axios.get(`http://localhost:8001/reimbursements/${id}`);
+        const response = await axios.get(`https://ipowertree.onrender.com/reimbursements/${id}`);
         setReimbursement(response.data);
       } catch (error) {
         setError("Error fetching reimbursement application");
@@ -31,7 +31,7 @@ const CheckReimb = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.patch(`http://localhost:8001/reimbursements/${id}/status`, { status, review });
+      await axios.patch(`https://ipowertree.onrender.com/reimbursements/${id}/status`, { status, review });
       setReimbursement((prevReimbursement) => ({
         ...prevReimbursement,
         status,
@@ -46,7 +46,7 @@ const CheckReimb = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this reimbursement application?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:8001/reimbursements/${id}`);
+        await axios.delete(`https://ipowertree.onrender.com/reimbursements/${id}`);
         navigate("/homea/reimba");
       } catch (error) {
         console.error("Error deleting reimbursement:", error);
@@ -89,7 +89,7 @@ const CheckReimb = () => {
               {reimbursement.proofs && reimbursement.proofs.length > 0 ? (
                 reimbursement.proofs.map((proof, index) => (
                   <div key={index}>
-                    <a href={`http://localhost:8001/${proof}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`https://ipowertree.onrender.com/${proof}`} target="_blank" rel="noopener noreferrer">
                       View Proof {index + 1}
                     </a>
                   </div>

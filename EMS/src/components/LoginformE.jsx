@@ -121,7 +121,7 @@ export default LoginformE;
 //   useEffect(() => {
 //     const fetchAllAdmin = async () => {
 //       try {
-//         const res = await axios.get("http://localhost:8001/employees");
+//         const res = await axios.get("https://ipowertree.onrender.com/employees");
 //         setLoginData(res.data);
 //         console.log(res);
 //       } catch (err) {

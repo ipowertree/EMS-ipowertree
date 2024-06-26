@@ -15,7 +15,7 @@ const AttendanceA = () => {
   const [isUpdate, setIsUpdate] = useState(false);
 
   useEffect(() => {
-    axios.get("http://localhost:8001/employees")
+    axios.get("https://ipowertree.onrender.com/employees")
       .then(response => {
         setEmployees(response.data);
       })
@@ -57,7 +57,7 @@ const AttendanceA = () => {
     if (isUpdate) {
       try {
         setLoading(true);
-        await axios.put(`http://localhost:8001/attendance/${selectedYear}/${selectedMonth}/${selectedDate}`, attendanceData);
+        await axios.put(`https://ipowertree.onrender.com/attendance/${selectedYear}/${selectedMonth}/${selectedDate}`, attendanceData);
         alert(`Attendance updated successfully for ${selectedDay}, ${selectedDate}-${selectedMonth}-${selectedYear}`);
         navigate("/homea/manageempa");
       } catch (error) {
@@ -68,7 +68,7 @@ const AttendanceA = () => {
     } else {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:8001/attendance/${selectedYear}/${selectedMonth}/${selectedDate}`);
+        const res = await axios.get(`https://ipowertree.onrender.com/attendance/${selectedYear}/${selectedMonth}/${selectedDate}`);
         if (res.data.length > 0) {
           alert(`Attendance for ${selectedDay}, ${selectedDate}-${selectedMonth}-${selectedYear} already exists.`);
           setLoading(false);
@@ -80,7 +80,7 @@ const AttendanceA = () => {
         return;
       }
 
-      axios.post("http://localhost:8001/attendance", attendanceData)
+      axios.post("https://ipowertree.onrender.com/attendance", attendanceData)
         .then(response => {
           console.log(response.data);
           alert(`Attendance recorded successfully for ${selectedDay}, ${selectedDate}-${selectedMonth}-${selectedYear}`);
@@ -98,7 +98,7 @@ const AttendanceA = () => {
   const handleUpdate = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:8001/attendance/${selectedYear}/${selectedMonth}/${selectedDate}`);
+      const res = await axios.get(`https://ipowertree.onrender.com/attendance/${selectedYear}/${selectedMonth}/${selectedDate}`);
       if (res.data.length > 0) {
         const existingAttendance = res.data[0].data;
         setAttendance(existingAttendance);

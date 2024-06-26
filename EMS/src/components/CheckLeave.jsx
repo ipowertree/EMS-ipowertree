@@ -18,7 +18,7 @@ const CheckLeave = () => {
     const fetchLeave = async () => {
       try {
         console.log("Fetching Leave ID:", id); // Log the ID
-        const response = await axios.get(`http://localhost:8001/leave/${id}`);
+        const response = await axios.get(`https://ipowertree.onrender.com/leave/${id}`);
         console.log("Fetched Leave Data:", response.data); // Log the response data
         setLeave(response.data);
       } catch (error) {
@@ -34,7 +34,7 @@ const CheckLeave = () => {
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axios.patch(`http://localhost:8001/leaves/${id}/status`, { status, review, leavePaymentType });
+      await axios.patch(`https://ipowertree.onrender.com/leaves/${id}/status`, { status, review, leavePaymentType });
       setLeave((prevLeave) => ({
         ...prevLeave,
         status,
@@ -51,7 +51,7 @@ const CheckLeave = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this leave application?');
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:8001/leaves/${id}`);
+        await axios.delete(`https://ipowertree.onrender.com/leaves/${id}`);
         navigate('/homea/leavea');
       } catch (error) {
         console.error('Error deleting leave:', error);

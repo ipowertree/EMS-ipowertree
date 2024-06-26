@@ -12,7 +12,7 @@ function ClientDocs() {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const res = await axios.get(`http://localhost:8001/clientDocuments/${uid}`);
+        const res = await axios.get(`https://ipowertree.onrender.com/clientDocuments/${uid}`);
         setDocuments(res.data);
       } catch (err) {
         console.error('Error fetching documents:', err);
@@ -32,7 +32,7 @@ function ClientDocs() {
     formData.append("documentName", documentName);
 
     try {
-      const res = await axios.post(`http://localhost:8001/clientDocuments/${uid}/upload`, formData, {
+      const res = await axios.post(`https://ipowertree.onrender.com/clientDocuments/${uid}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -52,7 +52,7 @@ function ClientDocs() {
     if (confirmDelete) {
     
     try {
-      const res = await axios.delete(`http://localhost:8001/clientDocuments/${uid}/${docId}`);
+      const res = await axios.delete(`https://ipowertree.onrender.com/clientDocuments/${uid}/${docId}`);
       console.log('Delete response:', res.data);
       setDocuments(documents.filter(doc => doc._id !== docId));
     } catch (err) {
@@ -106,7 +106,7 @@ function ClientDocs() {
             {documents.map((doc) => (
               <li key={doc._id} className="list-group-item d-flex justify-content-between align-items-center">
                 <div>
-                  <strong>{doc.documentName}</strong> - <a href={`http://localhost:8001/${doc.docs[0]}`} target="_blank" rel="noopener noreferrer">View</a>
+                  <strong>{doc.documentName}</strong> - <a href={`https://ipowertree.onrender.com/${doc.docs[0]}`} target="_blank" rel="noopener noreferrer">View</a>
                 </div>
                 <button className="btn btn-danger btn-xs" onClick={() => handleDelete(doc._id)}>Delete</button>
               </li>

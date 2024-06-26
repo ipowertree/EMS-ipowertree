@@ -163,7 +163,7 @@ export default LoginformC;
 //   useEffect(() => {
 //     const fetchAllAdmin = async () => {
 //       try {
-//         const res = await axios.get("http://localhost:8001/clients");
+//         const res = await axios.get("https://ipowertree.onrender.com/clients");
 //         setLoginData(res.data);
 //         console.log(res);
 //       } catch (err) {

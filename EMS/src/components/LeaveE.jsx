@@ -65,7 +65,7 @@ const LeaveE = () => {
     try {
       console.log("Form Data:", formData); // Log formData to check its content
       const response = await axios.post(
-        "http://localhost:8001/submit-leave",
+        "https://ipowertree.onrender.com/submit-leave",
         formData
       );
       alert("Form submitted successfully");

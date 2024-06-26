@@ -18,7 +18,7 @@ function CheckUpdC() {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const res = await axios.get(`http://localhost:8001/clientDocuments/${userId}`);
+        const res = await axios.get(`https://ipowertree.onrender.com/clientDocuments/${userId}`);
         setDocuments(res.data);
       } catch (err) {
         console.error('Error fetching documents:', err);
@@ -42,7 +42,7 @@ function CheckUpdC() {
                 <ul className="list-group list-group-flush">
                   {documents.map((doc) => (
                     <li key={doc._id} className="list-group-item">
-                      <strong>{doc.documentName}</strong> - <a href={`http://localhost:8001/${doc.docs[0]}`} target="_blank" rel="noopener noreferrer">View</a>
+                      <strong>{doc.documentName}</strong> - <a href={`https://ipowertree.onrender.com/${doc.docs[0]}`} target="_blank" rel="noopener noreferrer">View</a>
                     </li>
                   ))}
                 </ul>

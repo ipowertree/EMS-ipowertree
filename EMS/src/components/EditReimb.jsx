@@ -26,7 +26,7 @@ const EditReimb = () => {
   useEffect(() => {
     const fetchReimbursement = async () => {
       try {
-        const response = await axios.get(`http://localhost:8001/reimbursements/${id}`);
+        const response = await axios.get(`https://ipowertree.onrender.com/reimbursements/${id}`);
         const data = response.data;
         setFormData({
           uid: data.uid,
@@ -130,7 +130,7 @@ const EditReimb = () => {
       }
 
       const response = await axios.put(
-        `http://localhost:8001/reimbursements/${id}`,
+        `https://ipowertree.onrender.com/reimbursements/${id}`,
         data
       );
       console.log(response.data);
@@ -365,7 +365,7 @@ const EditReimb = () => {
                   <ul>
                     {formData.proofs.map((proof, index) => (
                       <li key={index} className="d-flex justify-content-between align-items-center">
-                        <a href={`http://localhost:8001/${proof}`} target="_blank" rel="noopener noreferrer">
+                        <a href={`https://ipowertree.onrender.com/${proof}`} target="_blank" rel="noopener noreferrer">
                           View Proof {index + 1}
                         </a>
                         <button

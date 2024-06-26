@@ -116,7 +116,7 @@ export default LoginformA;
 //   useEffect(() => {
 //     const fetchAllAdmin = async () => {
 //       try {
-//         const res = await axios.get("http://localhost:8001/admins");
+//         const res = await axios.get("https://ipowertree.onrender.com/admins");
 //         setLoginData(res.data);
 //         console.log(res);
 //       } catch (err) {

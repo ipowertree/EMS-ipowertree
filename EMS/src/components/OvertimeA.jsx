@@ -20,7 +20,7 @@ function OvertimeA() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:8001/employees");
+        const response = await axios.get("https://ipowertree.onrender.com/employees");
         setEmployees(response.data);
       } catch (err) {
         console.error("Error fetching employees:", err);
@@ -41,7 +41,7 @@ function OvertimeA() {
     setError(null);
 
     try {
-      const response = await axios.get(`http://localhost:8001/overtime/employee/${uid}`, {
+      const response = await axios.get(`https://ipowertree.onrender.com/overtime/employee/${uid}`, {
         params: {
           year,
           month
@@ -76,7 +76,7 @@ function OvertimeA() {
     setError(null);
 
     try {
-      const response = await axios.get(`http://localhost:8001/overtime/employee/${uid}/month/${year}/${month}`);
+      const response = await axios.get(`https://ipowertree.onrender.com/overtime/employee/${uid}/month/${year}/${month}`);
       setTotalOvertimeHours(response.data.totalHours);
     } catch (err) {
       if (err.response) {

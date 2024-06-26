@@ -18,7 +18,7 @@ const LeaveA = () => {
   useEffect(() => {
     const fetchLeaves = async () => {
       try {
-        const response = await axios.get("http://localhost:8001/leaves");
+        const response = await axios.get("https://ipowertree.onrender.com/leaves");
         setLeaves(response.data);
         setLoading(false);
       } catch (error) {
