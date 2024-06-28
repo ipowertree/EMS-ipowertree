@@ -2,7 +2,6 @@
   "version": 2,
   "builds": [
     { "src": "Server/app.js", "use": "@vercel/node" },
-    { "src": "EMS/index.html", "use": "@vercel/static" },
     { "src": "EMS/**/*", "use": "@vercel/static" }
   ],
   "routes": [
