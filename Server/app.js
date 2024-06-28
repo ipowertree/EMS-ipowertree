@@ -15,13 +15,7 @@ import {uploadFileToDrive, authorize } from "./googleDrive.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const corsOptions = {
-  origin: 'https://ipower.vercel.app', // Replace with your frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the methods you want to allow
-  allowedHeaders: ['Content-Type', 'Authorization'], // Specify the headers you want to allow
-};
 
-app.use(cors(corsOptions));
 
 import mongoose from "mongoose";
 import { collectiona, collectionc, collectione, employeeSchema, attendanceSchema,taskSchema,leaveSchema,ReimbursementSchema,clientSchema,clientDocumentSchema, overtimeSchema} from "./index.mjs";
@@ -43,13 +37,27 @@ const app = express();
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
+const corsOptions = {
+  origin: 'https://ipower.vercel.app', // Replace with your frontend origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD', 'CONNECT'], // Specify the methods you want to allow
+  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'], // Include necessary headers
+  exposedHeaders: ['Access-Control-Allow-Origin'], // Ensure the header is exposed
+  credentials: true
+};
 
-app.use(cors({
-  origin: 'https://ipower.vercel.app', // or '*' to allow all origins
-  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS', 'PATCH', 'HEAD', 'CONNECT'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight requests
+app.options('*', cors(corsOptions)); // Preflight request for all routes
+
+
+
+// app.use(cors({
+//   origin: 'https://ipower.vercel.app', // or '*' to allow all origins
+//   methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS', 'PATCH', 'HEAD', 'CONNECT'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+//   credentials: true,
+// }));
 
 // app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Origin', 'https://ipower.vercel.app');
