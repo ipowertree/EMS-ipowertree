@@ -15,20 +15,6 @@ import {uploadFileToDrive, authorize } from "./googleDrive.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Serve static files from the EMS directory
-app.use(express.static(path.join(__dirname, '../EMS')));
-
-// API endpoint
-app.get('/api', (req, res) => {
-  res.send('API endpoint');
-});
-
-// Fallback to index.html for all other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../EMS/index.html'));
-});
-
-
 import mongoose from "mongoose";
 import { collectiona, collectionc, collectione, employeeSchema, attendanceSchema,taskSchema,leaveSchema,ReimbursementSchema,clientSchema,clientDocumentSchema, overtimeSchema} from "./index.mjs";
 
