@@ -10,26 +10,19 @@ const CREDENTIALS_PATH = './credentials.json'; // Adjust path as per your projec
 const __dirname = path.resolve();
 
 async function authorize() {
-  const credentialsRaw = await fs.readFile(path.resolve(__dirname, CREDENTIALS_PATH));
-  const credentials = JSON.parse(credentialsRaw);
-  const { client_secret, client_id, redirect_uris } = credentials.installed;
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-
   try {
+    const credentialsRaw = await fs.readFile(path.resolve(__dirname, CREDENTIALS_PATH));
+    const credentials = JSON.parse(credentialsRaw);
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+
     const token = await fs.readFile(TOKEN_PATH);
     oAuth2Client.setCredentials(JSON.parse(token));
     return oAuth2Client;
   } catch (error) {
-    return getAccessToken(oAuth2Client);
+    console.error('Error authorizing Google API:', error);
+    throw error;
   }
-}
-
-async function getAccessToken(oAuth2Client) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
-  });
-  console.log('Authorize this app by visiting this url:', authUrl);
 }
 
 async function uploadFileToDrive(file) {
@@ -41,7 +34,6 @@ async function uploadFileToDrive(file) {
     const auth = await authorize();
     const drive = google.drive({ version: 'v3', auth });
 
-    // Generate a unique filename (you can adjust this logic as needed)
     const uniqueFileName = `${file.originalname}-${Date.now()}`;
     
     const fileMetadata = {
@@ -49,7 +41,6 @@ async function uploadFileToDrive(file) {
       parents: ['1WWIwRV9RqwOoBBYTveTvZHm1TuJz8WmA'], // Replace with the ID of the folder where you want to upload the file
     };
 
-    // Create a readable stream from file buffer
     const readableFile = Readable.from([file.buffer]);
 
     const media = {
@@ -66,7 +57,6 @@ async function uploadFileToDrive(file) {
     const fileId = response.data.id;
     const webViewLink = response.data.webViewLink;
 
-    // Optionally, set permissions for the file
     await drive.permissions.create({
       fileId: fileId,
       requestBody: {
