@@ -16,13 +16,32 @@ async function authorize() {
     const { client_secret, client_id, redirect_uris } = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
-    const token = await fs.readFile(TOKEN_PATH);
-    oAuth2Client.setCredentials(JSON.parse(token));
-    return oAuth2Client;
+    try {
+      const tokenRaw = await fs.readFile(TOKEN_PATH);
+      if (!tokenRaw || tokenRaw.length === 0) {
+        throw new Error('Token file is empty');
+      }
+      const token = JSON.parse(tokenRaw);
+      oAuth2Client.setCredentials(token);
+      return oAuth2Client;
+    } catch (tokenError) {
+      console.error('Error reading token:', tokenError);
+      return getAccessToken(oAuth2Client);
+    }
   } catch (error) {
     console.error('Error authorizing Google API:', error);
     throw error;
   }
+}
+
+async function getAccessToken(oAuth2Client) {
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES,
+  });
+  console.log('Authorize this app by visiting this url:', authUrl);
+  // Here you would normally prompt the user to visit the URL and get the auth code,
+  // then exchange it for tokens and save them to TOKEN_PATH.
 }
 
 async function uploadFileToDrive(file) {
