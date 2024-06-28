@@ -18,11 +18,12 @@ const __dirname = dirname(__filename);
 // Serve static files from the EMS directory
 app.use(express.static(path.join(__dirname, '../EMS')));
 
+// API endpoint
 app.get('/api', (req, res) => {
   res.send('API endpoint');
 });
 
-// All other routes should serve the index.html
+// Fallback to index.html for all other routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../EMS/index.html'));
 });
