@@ -110,7 +110,7 @@ function ClientDocs() {
             {documents.map((doc) => (
               <li key={doc._id} className="list-group-item d-flex justify-content-between align-items-center">
                 <div>
-                  <strong>{doc.documentName}</strong> - <a href={`https://ipowertree.onrender.com/${doc.docs[0]}`} target="_blank" rel="noopener noreferrer">View</a>
+                  <strong>{doc.documentName}</strong> - <a href={doc.docs[0]} target="_blank" rel="noopener noreferrer">View</a>
                 </div>
                 <button className="btn btn-danger btn-xs" onClick={() => handleDelete(doc._id)}>Delete</button>
               </li>

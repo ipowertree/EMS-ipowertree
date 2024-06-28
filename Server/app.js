@@ -4,6 +4,10 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { google } from "googleapis";
+
+
+import {uploadFileToDrive, authorize } from "./googleDrive.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -529,35 +533,77 @@ app.post('/attendance', async (req, res) => {
     
 
 
-app.use('/uploads', express.static('uploads'));
+// app.use('/uploads', express.static('uploads'));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/');
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//   }
+// });
 
+// const upload = multer({ storage });
+
+// app.post("/reimbursement", upload.array("proofs", 12), async (req, res) => {
+//   try {
+//     const {
+//       uid,
+//       expenseType,
+//       description,
+//       startDate,
+//       endDate,
+//       vehicleType,
+//       totalKms,
+//       totalExpense,
+//       gstType,
+//     } = req.body;
+
+//     const proofs = req.files.map((file) => file.path);
+
+//     const newReimbursement = new Reimbursement({
+//       uid,
+//       expenseType,
+//       description,
+//       startDate,
+//       endDate,
+//       proofs,
+//       vehicleType,
+//       totalKms,
+//       totalExpense,
+//       gstType, // Save GST type
+//     });
+
+//     await newReimbursement.save();
+//     res.status(200).send("Reimbursement request submitted successfully");
+//   } catch (error) {
+//     console.error("Error submitting reimbursement request:", error);
+//     res.status(500).send("Error submitting reimbursement request");
+//   }
+// });
+
+// Configure multer to use memory storage
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-app.post("/reimbursement", upload.array("proofs", 12), async (req, res) => {
+app.post('/reimbursement', upload.array('proofs', 12), async (req, res) => {
   try {
-    const {
-      uid,
-      expenseType,
-      description,
-      startDate,
-      endDate,
-      vehicleType,
-      totalKms,
-      totalExpense,
-      gstType,
-    } = req.body;
+    const { uid, expenseType, description, startDate, endDate, vehicleType, totalKms, totalExpense, gstType } = req.body;
 
-    const proofs = req.files.map((file) => file.path);
+    const proofs = [];
+    for (const file of req.files) {
+      try {
+        const driveLink = await uploadFileToDrive(file);
+        proofs.push(driveLink);
+      } catch (error) {
+        console.error('Error uploading to Google Drive:', error);
+        return res.status(500).send('Error uploading files to Google Drive');
+      }
+    }
 
+    // Assuming you have a MongoDB or other database integration here to save reimbursement data
+    // Example:
     const newReimbursement = new Reimbursement({
       uid,
       expenseType,
@@ -568,17 +614,16 @@ app.post("/reimbursement", upload.array("proofs", 12), async (req, res) => {
       vehicleType,
       totalKms,
       totalExpense,
-      gstType, // Save GST type
+      gstType,
     });
-
     await newReimbursement.save();
-    res.status(200).send("Reimbursement request submitted successfully");
+
+    res.status(200).send('Reimbursement request submitted successfully');
   } catch (error) {
-    console.error("Error submitting reimbursement request:", error);
-    res.status(500).send("Error submitting reimbursement request");
+    console.error('Error submitting reimbursement request:', error);
+    res.status(500).send('Error submitting reimbursement request');
   }
 });
-
 
 
 app.get('/reimbursement/:uid', async (req, res) => {
@@ -604,6 +649,39 @@ app.get('/reimbursements/:id', async (req, res) => {
   }
 });
 
+// app.delete('/reimbursements/:id', async (req, res) => {
+//   try {
+//     const reimbursement = await Reimbursement.findById(req.params.id);
+//     if (!reimbursement) {
+//       console.error("Reimbursement not found:", req.params.id);
+//       return res.status(404).send('Reimbursement not found');
+//     }
+
+//     console.log("Deleting reimbursement:", reimbursement);
+
+//     // Delete the reimbursement entry
+//     await Reimbursement.findByIdAndDelete(req.params.id);
+//     console.log("Successfully deleted reimbursement");
+//     res.status(200).send('Reimbursement deleted');
+//   } catch (error) {
+//     console.error("Error deleting reimbursement:", error);
+//     res.status(500).send({ message: 'Internal Server Error', error: error.message });
+//   }
+// });
+
+
+const auth = await authorize(); // Make sure to handle authorization globally or within a function
+const drive = google.drive({ version: 'v3', auth });
+
+async function deleteFileFromDrive(fileId) {
+  try {
+    await drive.files.delete({ fileId });
+  } catch (error) {
+    console.error('Error deleting file from Google Drive:', error);
+    throw new Error('Error deleting file from Google Drive');
+  }
+}
+
 app.delete('/reimbursements/:id', async (req, res) => {
   try {
     const reimbursement = await Reimbursement.findById(req.params.id);
@@ -614,15 +692,31 @@ app.delete('/reimbursements/:id', async (req, res) => {
 
     console.log("Deleting reimbursement:", reimbursement);
 
+    // Extract file IDs from proofs (assuming proofs contain Google Drive links)
+    const proofLinks = reimbursement.proofs || [];
+    const fileIds = proofLinks.map(link => {
+      const matches = link.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      return matches ? matches[1] : null;
+    }).filter(id => id);
+
+    // Delete files from Google Drive
+    for (const fileId of fileIds) {
+      await deleteFileFromDrive(fileId);
+    }
+
     // Delete the reimbursement entry
     await Reimbursement.findByIdAndDelete(req.params.id);
-    console.log("Successfully deleted reimbursement");
+
+    console.log("Successfully deleted reimbursement and associated files");
     res.status(200).send('Reimbursement deleted');
   } catch (error) {
     console.error("Error deleting reimbursement:", error);
-    res.status(500).send({ message: 'Internal Server Error', error: error.message });
+    res.status(500).send({ message: error.message });
   }
 });
+
+
+
 
 app.get('/reimbursements', async (req, res) => {
   try {
@@ -661,6 +755,50 @@ app.patch('/reimbursements/:id/status', async (req, res) => {
   }
 });
 
+// app.put('/reimbursements/:id', upload.array('proofs', 10), async (req, res) => {
+//   try {
+//     const {
+//       uid,
+//       expenseType,
+//       description,
+//       startDate,
+//       endDate,
+//       totalExpense,
+//       gstType,
+//       vehicleType,
+//       totalKms,
+//     } = req.body;
+
+//     const existingProofs = req.body.existingProofs ? [].concat(req.body.existingProofs) : [];
+//     const newProofs = req.files.map(file => file.path);
+
+//     const updatedProofs = [...existingProofs, ...newProofs];
+
+//     const updateData = {
+//       uid,
+//       expenseType,
+//       description,
+//       startDate,
+//       endDate,
+//       totalExpense,
+//       gstType,
+//       vehicleType: expenseType === 'fuel' ? vehicleType : '',
+//       totalKms: expenseType === 'fuel' ? totalKms : '',
+//       proofs: updatedProofs,
+//     };
+
+//     const updatedReimbursement = await Reimbursement.findByIdAndUpdate(
+//       req.params.id,
+//       updateData,
+//       { new: true }
+//     );
+
+//     res.json(updatedReimbursement);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+
 app.put('/reimbursements/:id', upload.array('proofs', 10), async (req, res) => {
   try {
     const {
@@ -676,9 +814,19 @@ app.put('/reimbursements/:id', upload.array('proofs', 10), async (req, res) => {
     } = req.body;
 
     const existingProofs = req.body.existingProofs ? [].concat(req.body.existingProofs) : [];
-    const newProofs = req.files.map(file => file.path);
+    const newProofs = req.files.map(file => file);
 
-    const updatedProofs = [...existingProofs, ...newProofs];
+    // Array to store Google Drive webViewLinks for proofs
+    const proofLinks = [];
+
+    // Upload new proofs to Google Drive
+    for (const file of newProofs) {
+      const webViewLink = await uploadFileToDrive(file); // Assuming uploadFileToDrive returns webViewLink
+      proofLinks.push(webViewLink);
+    }
+
+    // Combine existing proofs with new webViewLinks
+    const updatedProofs = [...existingProofs, ...proofLinks];
 
     const updateData = {
       uid,
@@ -701,9 +849,12 @@ app.put('/reimbursements/:id', upload.array('proofs', 10), async (req, res) => {
 
     res.json(updatedReimbursement);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error updating reimbursements:', error);
+    res.status(500).json({ message: 'Error updating reimbursements' });
   }
 });
+
+
 
 app.post('/addclient', (req, res) => {
   const { uid, password, clientType, name, phone, address, locationLink } = req.body;
@@ -751,28 +902,108 @@ app.put('/clients/:uid', async (req, res) => {
 });
 
 // Delete a client by UID
+// app.delete('/clients/:uid', async (req, res) => {
+//   try {
+//     const client = await Client.findOneAndDelete({ uid: req.params.uid });
+//     if (!client) return res.status(404).send('Client not found');
+//     res.status(200).json({ message: 'Client deleted successfully' });
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
+
+
+// app.use('/clientdocs', express.static('clientdocs'));
+
+// const clientDocsStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'clientdocs/');
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//   },
+// });
+
+// const clientDocsUpload = multer({ storage: clientDocsStorage });
+
+// app.post('/clientDocuments/:uid/upload', clientDocsUpload.array('docs'), async (req, res) => {
+//   try {
+//     console.log('Files:', req.files);
+//     console.log('Body:', req.body);
+
+//     if (!req.files || req.files.length === 0) {
+//       return res.status(400).json({ message: 'No files uploaded.' });
+//     }
+
+//     const { uid } = req.params;
+//     const { documentName } = req.body;
+//     const uploadDate = req.body.uploadDate || Date.now();
+//     const docs = req.files.map(file => file.path);
+
+//     const newClientDocument = new ClientDocument({
+//       uid,
+//       documentName,
+//       uploadDate,
+//       docs,
+//     });
+
+//     await newClientDocument.save();
+//     res.status(200).json({ message: 'Document uploaded successfully', document: newClientDocument });
+//   } catch (error) {
+//     console.error('Server error:', error);
+//     res.status(500).json({ message: 'Server error', error: error.message });
+//   }
+// });
+
+
 app.delete('/clients/:uid', async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const client = await Client.findOneAndDelete({ uid: req.params.uid });
-    if (!client) return res.status(404).send('Client not found');
-    res.status(200).json({ message: 'Client deleted successfully' });
+    const client = await Client.findOneAndDelete({ uid: req.params.uid }).session(session);
+    if (!client) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).send('Client not found');
+    }
+
+    const clientDocuments = await ClientDocument.find({ uid: req.params.uid }).session(session);
+    
+    const fileIds = [];
+    clientDocuments.forEach(doc => {
+      const docFileIds = doc.docs.map(link => {
+        const matches = link.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        return matches ? matches[1] : null;
+      }).filter(id => id);
+      fileIds.push(...docFileIds);
+    });
+
+    for (const fileId of fileIds) {
+      await deleteFileFromDrive(fileId);
+    }
+
+    await ClientDocument.deleteMany({ uid: req.params.uid }).session(session);
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({ message: 'Client and associated documents deleted successfully' });
   } catch (err) {
-    res.status(500).send(err);
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Error deleting client and documents:', err);
+    res.status(500).send({ error: err.message });
   }
 });
 
-app.use('/clientdocs', express.static('clientdocs'));
+function getFileIdFromUrl(url) {
+  const match = url.match(/\/file\/d\/([a-zA-Z0-9-_]+)\//);
+  return match ? match[1] : null;
+}
 
-const clientDocsStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'clientdocs/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
 
-const clientDocsUpload = multer({ storage: clientDocsStorage });
+const clientDocsUpload = multer({ storage: multer.memoryStorage() });
 
 app.post('/clientDocuments/:uid/upload', clientDocsUpload.array('docs'), async (req, res) => {
   try {
@@ -786,7 +1017,17 @@ app.post('/clientDocuments/:uid/upload', clientDocsUpload.array('docs'), async (
     const { uid } = req.params;
     const { documentName } = req.body;
     const uploadDate = req.body.uploadDate || Date.now();
-    const docs = req.files.map(file => file.path);
+
+    const docs = [];
+    for (const file of req.files) {
+      try {
+        const driveLink = await uploadFileToDrive(file);
+        docs.push(driveLink);
+      } catch (error) {
+        console.error('Error uploading to Google Drive:', error);
+        return res.status(500).send('Error uploading files to Google Drive');
+      }
+    }
 
     const newClientDocument = new ClientDocument({
       uid,
@@ -803,6 +1044,9 @@ app.post('/clientDocuments/:uid/upload', clientDocsUpload.array('docs'), async (
   }
 });
 
+
+
+
 app.get('/clientDocuments/:uid', async (req, res) => {
   try {
     const { uid } = req.params;
@@ -813,27 +1057,60 @@ app.get('/clientDocuments/:uid', async (req, res) => {
   }
 });
 
+// app.delete('/clientDocuments/:uid/:docId', async (req, res) => {
+//   try {
+//     const { uid, docId } = req.params;
+//     console.log(`Deleting document with ID: ${docId} for user: ${uid}`);
+
+//     const document = await ClientDocument.findById(docId);
+
+//     if (!document) {
+//       console.error(`Document with ID: ${docId} not found.`);
+//       return res.status(404).json({ message: 'Document not found' });
+//     }
+
+//     // Delete the document entry
+//     await ClientDocument.deleteOne({ _id: docId });
+//     console.log("Successfully deleted document");
+//     res.status(200).json({ message: 'Document deleted successfully' });
+//   } catch (err) {
+//     console.error('Error deleting document:', err);
+//     res.status(500).json({ message: 'Internal Server Error', error: err.message });
+//   }
+// });
+
+
 app.delete('/clientDocuments/:uid/:docId', async (req, res) => {
   try {
     const { uid, docId } = req.params;
-    console.log(`Deleting document with ID: ${docId} for user: ${uid}`);
-
     const document = await ClientDocument.findById(docId);
-
     if (!document) {
-      console.error(`Document with ID: ${docId} not found.`);
-      return res.status(404).json({ message: 'Document not found' });
+            console.error(`Document with ID: ${docId} not found.`);
+            return res.status(404).json({ message: 'Document not found' });
+          }
+
+
+    // Extract file IDs from proofs (assuming proofs contain Google Drive links)
+    const docLinks = document.docs || [];
+    const fileIds = docLinks.map(link => {
+      const matches = link.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      return matches ? matches[1] : null;
+    }).filter(id => id);
+
+    // Delete files from Google Drive
+    for (const fileId of fileIds) {
+      await deleteFileFromDrive(fileId);
     }
 
-    // Delete the document entry
-    await ClientDocument.deleteOne({ _id: docId });
-    console.log("Successfully deleted document");
-    res.status(200).json({ message: 'Document deleted successfully' });
-  } catch (err) {
-    console.error('Error deleting document:', err);
-    res.status(500).json({ message: 'Internal Server Error', error: err.message });
+    
+    res.status(200).send('Document deleted');
+  } catch (error) {
+    console.error("Error deleting document:", error);
+    res.status(500).send({ message: error.message });
   }
 });
+
+
 
 
 app.get('/overtime', async (req, res) => {

@@ -79,6 +79,53 @@ const ReimbursementE = () => {
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const data = new FormData();
+  //     data.append("uid", formData.uid);
+  //     data.append("expenseType", formData.expenseType);
+  //     data.append("description", formData.description);
+  //     data.append("startDate", formData.startDate);
+  //     data.append("endDate", formData.endDate);
+  //     data.append("totalExpense", formData.totalExpense);
+  //     data.append("gstType", formData.gstType); // Append GST type
+  //     formData.proofs.forEach((proof) => {
+  //       data.append("proofs", proof);
+  //     });
+
+  //     if (formData.expenseType === "fuel") {
+  //       data.append("vehicleType", formData.vehicleType);
+  //       data.append("totalKms", formData.totalKms);
+  //     }
+
+  //     const response = await axios.post(
+  //       "https://ipowertree.onrender.com/reimbursement",
+  //       data,{
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data'
+  //         }
+  //       });
+  //     console.log(response.data);
+  //     alert("Form submitted successfully!");
+  //     setFormData({
+  //       uid: "",
+  //       expenseType: "",
+  //       description: "",
+  //       startDate: "",
+  //       endDate: "",
+  //       proofs: [],
+  //       vehicleType: "",
+  //       totalKms: "",
+  //       totalExpense: "",
+  //       gstType: "", // Reset GST type
+  //     });
+  //   } catch (error) {
+  //     console.error("Error submitting form data:", error);
+  //     alert("Error submitting form. Please try again.");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -89,7 +136,7 @@ const ReimbursementE = () => {
       data.append("startDate", formData.startDate);
       data.append("endDate", formData.endDate);
       data.append("totalExpense", formData.totalExpense);
-      data.append("gstType", formData.gstType); // Append GST type
+      data.append("gstType", formData.gstType); 
       formData.proofs.forEach((proof) => {
         data.append("proofs", proof);
       });
@@ -101,11 +148,8 @@ const ReimbursementE = () => {
 
       const response = await axios.post(
         "https://ipowertree.onrender.com/reimbursement",
-        data,{
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        data
+      );
       console.log(response.data);
       alert("Form submitted successfully!");
       setFormData({
@@ -118,13 +162,14 @@ const ReimbursementE = () => {
         vehicleType: "",
         totalKms: "",
         totalExpense: "",
-        gstType: "", // Reset GST type
+        gstType: "", 
       });
     } catch (error) {
       console.error("Error submitting form data:", error);
       alert("Error submitting form. Please try again.");
     }
   };
+
 
   const handleViewApplications = () => {
     navigate("/homee/viewreimbe");

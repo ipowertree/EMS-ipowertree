@@ -91,7 +91,7 @@ const CheckReimb = () => {
               {reimbursement.proofs && reimbursement.proofs.length > 0 ? (
                 reimbursement.proofs.map((proof, index) => (
                   <div key={index}>
-                    <a href={`https://ipowertree.onrender.com/${proof}`} target="_blank" rel="noopener noreferrer">
+                    <a href={proof} target="_blank" rel="noopener noreferrer">
                       View Proof {index + 1}
                     </a>
                   </div>

@@ -365,7 +365,7 @@ const EditReimb = () => {
                   <ul>
                     {formData.proofs.map((proof, index) => (
                       <li key={index} className="d-flex justify-content-between align-items-center">
-                        <a href={`https://ipowertree.onrender.com/${proof}`} target="_blank" rel="noopener noreferrer">
+                        <a href={proof} target="_blank" rel="noopener noreferrer">
                           View Proof {index + 1}
                         </a>
                         <button
