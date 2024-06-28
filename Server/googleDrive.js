@@ -87,6 +87,7 @@ async function uploadFileToDrive(file) {
     return webViewLink;
   } catch (error) {
     console.error('Error uploading to Google Drive:', error);
+    console.error('Full error details:', error.response?.data || error.message);
     throw new Error('Error uploading files to Google Drive');
   }
 }
