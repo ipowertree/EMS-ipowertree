@@ -1119,6 +1119,7 @@ app.delete('/clientDocuments/:uid/:docId', async (req, res) => {
     for (const fileId of fileIds) {
       await deleteFileFromDrive(fileId);
     }
+    await ClientDocument.deleteOne({ _id: docId });
 
     
     res.status(200).send('Document deleted');
