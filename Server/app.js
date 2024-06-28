@@ -1,10 +1,12 @@
 import express, { json, urlencoded } from "express";
 import multer from "multer";
-import fs from "fs";
-import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { google } from "googleapis";
+import cors from "cors";
+import { Readable } from 'stream';
+import path from 'path';
+import fs from 'fs/promises';
 
 
 import {uploadFileToDrive, authorize } from "./googleDrive.js";
@@ -12,6 +14,13 @@ import {uploadFileToDrive, authorize } from "./googleDrive.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const corsOptions = {
+  origin: 'https://ipower.vercel.app', // Replace with your frontend origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the methods you want to allow
+  allowedHeaders: ['Content-Type', 'Authorization'], // Specify the headers you want to allow
+};
+
+app.use(cors(corsOptions));
 
 import mongoose from "mongoose";
 import { collectiona, collectionc, collectione, employeeSchema, attendanceSchema,taskSchema,leaveSchema,ReimbursementSchema,clientSchema,clientDocumentSchema, overtimeSchema} from "./index.mjs";
