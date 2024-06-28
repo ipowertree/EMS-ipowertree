@@ -1,12 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/app.js", "use": "@vercel/node" },
-    { "src": "EMS/index.html", "use": "@vercel/static" },
+    { "src": "Server/app.js", "use": "@vercel/node" },
     { "src": "EMS/**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/app.js" },
+    { "src": "/api/(.*)", "dest": "/Server/app.js" },
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/EMS/index.html" }
   ]
 }
