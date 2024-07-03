@@ -94,3 +94,31 @@ h2.text-center {
     font-size: 0.8rem;
   }
 }
+
+@media print {
+  .pdf-card {
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+  }
+
+  .pdf-card-header {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .pdf-card-content {
+    font-size: 0.9em;
+  }
+
+  .pdf-total-expense {
+    page-break-before: always;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+}
