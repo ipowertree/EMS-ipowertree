@@ -5,7 +5,7 @@
     { "src": "EMS/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "/Server/app.js" },
+    { "src": "/api/(.*)", "dest": "/Server/app.js" },
     { "src": "/(.*)", "dest": "/EMS/index.html" }
   ]
 }
