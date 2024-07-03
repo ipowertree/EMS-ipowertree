@@ -34,7 +34,7 @@ const ReimbursementA = () => {
     if (adminId === "A005") {
       setStatusFilter("Pending by Accountant");
     } else if (adminId === "A003") {
-      setStatusFilter("Pending by COO");
+      setStatusFilter("Pending by CMO");
     } else if (adminId === "A001") {
       setStatusFilter("Pending by CEO");
     }
@@ -69,10 +69,10 @@ const ReimbursementA = () => {
         (reimbursement.status === "Pending by Accountant" ||
           reimbursement.status === "On Hold by Accountant")) ||
       (adminId === "A003" &&
-        (statusFilter === "Pending by COO" ||
-          statusFilter === "On Hold by COO") &&
-        (reimbursement.status === "Pending by COO" ||
-          reimbursement.status === "On Hold by COO")) ||
+        (statusFilter === "Pending by CMO" ||
+          statusFilter === "On Hold by CMO") &&
+        (reimbursement.status === "Pending by CMO" ||
+          reimbursement.status === "On Hold by CMO")) ||
       (adminId === "A001" &&
         (statusFilter === "Pending by CEO" ||
           statusFilter === "On Hold by CEO") &&
@@ -212,18 +212,18 @@ const ReimbursementA = () => {
                       <>
                         <li>
                           <button
-                            className={`dropdown-item ${statusFilter === "Pending by COO" && "active"}`}
-                            onClick={() => setStatusFilter("Pending by COO")}
+                            className={`dropdown-item ${statusFilter === "Pending by CMO" && "active"}`}
+                            onClick={() => setStatusFilter("Pending by CMO")}
                           >
-                            Pending by COO
+                            Pending by CMO
                           </button>
                         </li>
                         <li>
                           <button
-                            className={`dropdown-item ${statusFilter === "On Hold by COO" && "active"}`}
-                            onClick={() => setStatusFilter("On Hold by COO")}
+                            className={`dropdown-item ${statusFilter === "On Hold by CMO" && "active"}`}
+                            onClick={() => setStatusFilter("On Hold by CMO")}
                           >
-                            On Hold by COO
+                            On Hold by CMO
                           </button>
                         </li>
                       </>

@@ -9,7 +9,7 @@ const LeaveA = () => {
   const [error, setError] = useState(null);
   const currentUser = window.localStorage.getItem("uid");
 
-  const initialFilter = currentUser === "A003" ? "Pending by COO" : currentUser === "A004" ? "Pending by Sr. Manager" : "All";
+  const initialFilter = currentUser === "A003" ? "Pending by CMO" : currentUser === "A004" ? "Pending by Sr. Manager" : "All";
   const [statusFilter, setStatusFilter] = useState(initialFilter);
   const [timePeriodFilter, setTimePeriodFilter] = useState("All");
   const [paymentTypeFilter, setPaymentTypeFilter] = useState("All");
@@ -115,7 +115,7 @@ const LeaveA = () => {
                   <li><button className={`dropdown-item ${statusFilter === "Pending by Sr. Manager" && "active"}`} onClick={() => setStatusFilter("Pending by Sr. Manager")}>Pending by Sr. Manager</button></li>
                   <li><button className={`dropdown-item ${statusFilter === "Approved" && "active"}`} onClick={() => setStatusFilter("Approved")}>Approved</button></li>
                   <li><button className={`dropdown-item ${statusFilter === "Rejected" && "active"}`} onClick={() => setStatusFilter("Rejected")}>Rejected</button></li>
-                  <li><button className={`dropdown-item ${statusFilter === "Pending by COO" && "active"}`} onClick={() => setStatusFilter("Pending by COO")}>Pending by COO</button></li>
+                  <li><button className={`dropdown-item ${statusFilter === "Pending by CMO" && "active"}`} onClick={() => setStatusFilter("Pending by CMO")}>Pending by CMO</button></li>
                   <li><button className={`dropdown-item ${statusFilter === "All" && "active"}`} onClick={() => setStatusFilter("All")}>All</button></li>
                 </ul>
               </div>

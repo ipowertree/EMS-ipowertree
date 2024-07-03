@@ -124,7 +124,7 @@ const CheckLeave = () => {
             <>
               <button
                 className="btn btn-warningcrl"
-                onClick={() => handleStatusChange(leave._id, 'Pending by COO')}
+                onClick={() => handleStatusChange(leave._id, 'Pending by CMO')}
               >
                 Send for Approval
               </button>
@@ -136,7 +136,7 @@ const CheckLeave = () => {
               </button>
             </>
           )}
-          {leave.status === 'Pending by COO' && adminId === 'A003' && (
+          {leave.status === 'Pending by CMO' && adminId === 'A003' && (
             <>
               <button
                 className="btn btn-successcr"

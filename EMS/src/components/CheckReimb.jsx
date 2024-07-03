@@ -117,7 +117,7 @@ const CheckReimb = () => {
           <div className="button-groupcrl">
             {(reimbursement.status === "Pending by Accountant" || reimbursement.status === "On Hold by Accountant") && adminId === "A005"  && (
               <>
-                <button className="btn btn-warningcrl" onClick={() => handleStatusChange(reimbursement._id, "Pending by COO")}>
+                <button className="btn btn-warningcrl" onClick={() => handleStatusChange(reimbursement._id, "Pending by CMO")}>
                   Send for Approval
                 </button>
                 <button className="btn btn-dangercrl" onClick={() => handleStatusChange(reimbursement._id, "Rejected")}>
@@ -128,7 +128,7 @@ const CheckReimb = () => {
                 </button>
               </>
             )}
-            {(reimbursement.status === "Pending by COO" || reimbursement.status === "On Hold by COO") && adminId === "A003"  && (
+            {(reimbursement.status === "Pending by CMO" || reimbursement.status === "On Hold by CMO") && adminId === "A003"  && (
               <>
                 <button className="btn btn-warningcrl" onClick={() => handleStatusChange(reimbursement._id, "Pending by CEO")}>
                   Send for Approval
@@ -136,7 +136,7 @@ const CheckReimb = () => {
                 <button className="btn btn-dangercrl" onClick={() => handleStatusChange(reimbursement._id, "Rejected")}>
                   Reject
                 </button>
-                <button className="btn btn-secondarycrl" onClick={() => handleStatusChange(reimbursement._id, "On Hold by COO")}>
+                <button className="btn btn-secondarycrl" onClick={() => handleStatusChange(reimbursement._id, "On Hold by CMO")}>
                   On Hold
                 </button>
               </>
