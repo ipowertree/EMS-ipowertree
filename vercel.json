@@ -6,9 +6,7 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/Server/app.js" },
-    { "src": "/(.*)", "dest": "/EMS/index.html" }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    { "src": "/(.*)", "dest": "/EMS/index.html" },
+    { "src": "/(.*)", "dest": "/"}
   ]
 }
