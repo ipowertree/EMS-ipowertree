@@ -12,6 +12,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: 'EMS',
+    outDir: 'dist', // This is the default, so you can omit this line if you prefer
   },
 });
