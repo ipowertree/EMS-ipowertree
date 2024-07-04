@@ -131,10 +131,11 @@ app.post('/loginformc', async (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'EMS')));
 
+// Catch-all route to serve index.html for unknown routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'EMS', 'index.html'));
 });
 
 
