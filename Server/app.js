@@ -78,30 +78,16 @@ app.get("/", (req, res) => {
   res.status(200).json({message: "Welcome to iPower API"});
 });
 
-// app.get("/login", (req,res) => {
-//   res.status(200).json({message: "Login Page"});
-// });
-
-// app.post("/login", (req, res) => {
-// const { role } = req.body;
-// res.status(200).json({ message: `Logged in as ${role}` });
-// });
-
-app.use(express.static(path.join(__dirname, "build")));
-
-app.get("/login", (req, res) => {
-  res.status(200).json({ message: "Login Page" });
+app.get("/login", (req,res) => {
+  res.status(200).json({message: "Login Page"});
 });
 
 app.post("/login", (req, res) => {
-  const { role } = req.body;
-  res.status(200).json({ message: `Logged in as ${role}` });
+const { role } = req.body;
+res.status(200).json({ message: `Logged in as ${role}` });
 });
 
-// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+
 
 app.post('/loginforma', async (req, res) => {
   try {
