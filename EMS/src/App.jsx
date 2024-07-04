@@ -64,9 +64,11 @@ function App() {
         <Route
           path="/homea"
           element={
-            <PrivateRoute>
-              <HomeA />
-            </PrivateRoute>
+            // <PrivateRoute>
+            //   <HomeA />
+            // </PrivateRoute>
+
+            <HomeA />
           }
         >
           <Route path="" element={<ProfileA />} />
@@ -99,9 +101,11 @@ function App() {
         <Route
           path="/homee"
           element={
-            <PrivateRoute>
-              <HomeE />
-            </PrivateRoute>
+            // <PrivateRoute>
+            //   <HomeE />
+            // </PrivateRoute>
+
+            <HomeE />
           }
         >
           <Route path="" element={<ProfileE />} />
@@ -122,9 +126,10 @@ function App() {
         <Route
           path="/homec"
           element={
-            <PrivateRoute>
-              <HomeC />
-            </PrivateRoute>
+            // <PrivateRoute>
+            //   <HomeC />
+            // </PrivateRoute>
+            <HomeC  />
           }
         >
           <Route path="" element={<ProfileC />} />
