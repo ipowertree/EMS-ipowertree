@@ -4,7 +4,7 @@
     { "src": "Server/app.js", "use": "@vercel/node" },
     { "src": "EMS/*/", "use": "@vercel/static" }
   ],
-  "rewrite": [
+  "rewrites": [
     { "src": "/api/(.*)", "dest": "/Server/app.js" },
     { "src": "/(.*)", "dest": "/EMS/index.html" }
   ]
