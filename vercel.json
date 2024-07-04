@@ -1,33 +1,11 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "Server/app.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "EMS/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "EMS/dist"
-      }
-    }
+    { "src": "Server/app.js", "use": "@vercel/node" },
+    { "src": "EMS/*/", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/Server/app.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/EMS/dist/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/EMS/dist/index.html"
-    }
+    { "src": "/api/(.*)", "dest": "/Server/app.js" },
+    { "src": "/(.*)", "dest": "/EMS/index.html" }
   ]
 }

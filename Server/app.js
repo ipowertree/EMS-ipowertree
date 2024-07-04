@@ -74,6 +74,9 @@ app.options('*', cors(corsOptions)); // Preflight request for all routes
 //   next();
 // });
 
+app.get("/", (req, res) => {
+  res.status(200).json({message: "Welcome to iPower API"});
+});
 
 app.get("/login", (req,res) => {
   res.status(200).json({message: "Login Page"});
