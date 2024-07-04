@@ -89,7 +89,7 @@ res.status(200).json({ message: `Logged in as ${role}` });
 
 
 
-app.post('/loginforma', async (req, res) => {
+app.post('/api/loginforma', async (req, res) => {
   try {
       const { uid, password } = req.body;
       const user = await collectiona.findOne({ uid, password }).lean();
