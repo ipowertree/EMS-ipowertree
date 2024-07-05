@@ -18,14 +18,19 @@ function HomeA() {
   }, []);
 
   const handleLogout = () => {
-    axios.get("https://ipowertree.onrender.com/logout").then((result) => {
-      if (result.data.Status) {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("uid");
-        window.location.href = "/login"; // Redirect to login page
-      }
-    });
+    axios.get("https://ipowertree.onrender.com/logout")
+      .then((result) => {
+        if (result.data.Status) {
+          localStorage.removeItem("isLoggedIn");
+          localStorage.removeItem("uid");
+          window.location.href = "/login"; // Redirect to login page
+        }
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      });
   };
+  
 
   return (
     <>
