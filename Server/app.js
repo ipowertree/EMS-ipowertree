@@ -87,11 +87,6 @@ const { role } = req.body;
 res.status(200).json({ message: `Logged in as ${role}` });
 });
 
-app.get('/logout', (req, res) => {
-  res.status(200).json({ Status: true, message: "Logged out successfully" });
-});
-
-
 app.post('/loginforma', async (req, res) => {
   try {
       const { uid, password } = req.body;
