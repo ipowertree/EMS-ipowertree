@@ -132,7 +132,6 @@ app.post('/loginformc', async (req, res) => {
 });
 
 
-
 app.get("/admins", async (req, res) => {
     try {
         const data = await collectiona.find({}, 'uid password name position').lean();
