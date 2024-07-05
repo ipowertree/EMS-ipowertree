@@ -2,6 +2,7 @@ import { google } from 'googleapis';
 import { Readable } from 'stream';
 import path from 'path';
 import fs from 'fs/promises';
+import readline from 'readline';
 
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
 const TOKEN_PATH = 'token.json';
@@ -23,6 +24,18 @@ async function authorize() {
       }
       const token = JSON.parse(tokenRaw);
       oAuth2Client.setCredentials(token);
+
+      // Automatically refresh the token if it's expired
+      oAuth2Client.on('tokens', async (tokens) => {
+        if (tokens.refresh_token) {
+          // Save the new refresh token and access token
+          const newToken = { ...token, ...tokens };
+          await fs.writeFile(TOKEN_PATH, JSON.stringify(newToken));
+        }
+      });
+
+      // Ensure the token is valid and refresh if necessary
+      await oAuth2Client.getAccessToken();
       return oAuth2Client;
     } catch (tokenError) {
       console.error('Error reading token:', tokenError);
@@ -40,8 +53,24 @@ async function getAccessToken(oAuth2Client) {
     scope: SCOPES,
   });
   console.log('Authorize this app by visiting this url:', authUrl);
-  // Here you would normally prompt the user to visit the URL and get the auth code,
-  // then exchange it for tokens and save them to TOKEN_PATH.
+
+  // After visiting the URL, get the authorization code from the user and exchange it for tokens
+  const code = await askQuestion('Enter the code from that page here: ');
+  const { tokens } = await oAuth2Client.getToken(code);
+  oAuth2Client.setCredentials(tokens);
+  await fs.writeFile(TOKEN_PATH, JSON.stringify(tokens));
+  console.log('Token stored to', TOKEN_PATH);
+}
+
+function askQuestion(query) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise(resolve => rl.question(query, ans => {
+    rl.close();
+    resolve(ans);
+  }));
 }
 
 async function uploadFileToDrive(file) {
