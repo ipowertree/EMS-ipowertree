@@ -39,7 +39,7 @@ const corsOptions = {
   origin: 'https://ipower.vercel.app', // Replace with your frontend origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD', 'CONNECT'], // Specify the methods you want to allow
   allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'], // Include necessary headers
-  exposedHeaders: ['Access-Control-Allow-Origin'], // Ensure the header is exposed
+  exposedHeaders: ['Content-Length', 'ETag', 'Access-Control-Allow-Origin'], // Ensure the header is exposed
   credentials: true
 };
 
@@ -47,7 +47,6 @@ app.use(cors(corsOptions));
 
 // Explicitly handle preflight requests
 app.options('*', cors(corsOptions)); // Preflight request for all routes
-
 
 
 // app.use(cors({
