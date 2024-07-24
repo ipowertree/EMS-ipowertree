@@ -1,14 +1,159 @@
+// import { google } from 'googleapis';
+// import { Readable } from 'stream';
+// import path from 'path';
+// import fs from 'fs/promises';
+// import readline from 'readline';
+
+// const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+// const TOKEN_PATH = 'token.json';
+// const CREDENTIALS_PATH = './credentials.json'; // Adjust path as per your project structure
+
+// const __dirname = path.resolve();
+
+// async function authorize() {
+//   try {
+//     const credentialsRaw = await fs.readFile(path.resolve(__dirname, CREDENTIALS_PATH));
+//     const credentials = JSON.parse(credentialsRaw);
+//     const { client_secret, client_id, redirect_uris } = credentials.installed;
+//     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+
+//     try {
+//       const tokenRaw = await fs.readFile(TOKEN_PATH);
+//       if (!tokenRaw || tokenRaw.length === 0) {
+//         throw new Error('Token file is empty');
+//       }
+//       const token = JSON.parse(tokenRaw);
+//       oAuth2Client.setCredentials(token);
+
+//       // Automatically refresh the token if it's expired
+//       oAuth2Client.on('tokens', async (tokens) => {
+//         if (tokens.refresh_token) {
+//           // Save the new refresh token and access token
+//           const newToken = { ...token, ...tokens };
+//           await fs.writeFile(TOKEN_PATH, JSON.stringify(newToken));
+//         }
+//       });
+
+//       // Ensure the token is valid and refresh if necessary
+//       await oAuth2Client.getAccessToken();
+//       return oAuth2Client;
+//     } catch (tokenError) {
+//       console.error('Error reading token:', tokenError);
+//       return getAccessToken(oAuth2Client);
+//     }
+//   } catch (error) {
+//     console.error('Error authorizing Google API:', error);
+//     throw error;
+//   }
+// }
+
+// async function getAccessToken(oAuth2Client) {
+//   const authUrl = oAuth2Client.generateAuthUrl({
+//     access_type: 'offline',
+//     scope: SCOPES,
+//   });
+//   console.log('Authorize this app by visiting this url:', authUrl);
+
+//   // After visiting the URL, get the authorization code from the user and exchange it for tokens
+//   const code = await askQuestion('Enter the code from that page here: ');
+//   const { tokens } = await oAuth2Client.getToken(code);
+//   oAuth2Client.setCredentials(tokens);
+//   await fs.writeFile(TOKEN_PATH, JSON.stringify(tokens));
+//   console.log('Token stored to', TOKEN_PATH);
+// }
+
+// function askQuestion(query) {
+//   const rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+//   });
+//   return new Promise(resolve => rl.question(query, ans => {
+//     rl.close();
+//     resolve(ans);
+//   }));
+// }
+
+// async function uploadFileToDrive(file) {
+//   try {
+//     if (!file || !file.buffer) {
+//       throw new Error('Invalid file buffer');
+//     }
+
+//     const auth = await authorize();
+//     const drive = google.drive({ version: 'v3', auth });
+
+//     const uniqueFileName = `${file.originalname}-${Date.now()}`;
+    
+//     const fileMetadata = {
+//       name: uniqueFileName,
+//       parents: ['1WWIwRV9RqwOoBBYTveTvZHm1TuJz8WmA'], // Replace with the ID of the folder where you want to upload the file
+//     };
+
+//     const readableFile = Readable.from([file.buffer]);
+
+//     const media = {
+//       mimeType: file.mimetype,
+//       body: readableFile,
+//     };
+
+//     const response = await drive.files.create({
+//       resource: fileMetadata,
+//       media: media,
+//       fields: 'id, webViewLink',
+//     });
+
+//     const fileId = response.data.id;
+//     const webViewLink = response.data.webViewLink;
+
+//     await drive.permissions.create({
+//       fileId: fileId,
+//       requestBody: {
+//         role: 'reader',
+//         type: 'anyone',
+//       },
+//     });
+
+//     return webViewLink;
+//   } catch (error) {
+//     console.error('Error uploading to Google Drive:', error);
+//     console.error('Full error details:', error.response?.data || error.message);
+//     throw new Error('Error uploading files to Google Drive');
+//   }
+// }
+
+// export { uploadFileToDrive, authorize };
+
+
 import { google } from 'googleapis';
 import { Readable } from 'stream';
 import path from 'path';
 import fs from 'fs/promises';
-import readline from 'readline';
+import { createClient } from 'redis';
 
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
-const TOKEN_PATH = 'token.json';
 const CREDENTIALS_PATH = './credentials.json'; // Adjust path as per your project structure
 
 const __dirname = path.resolve();
+
+const redisClient = createClient({
+  url: 'redis://localhost:6379' // Adjust to your Redis server address
+});
+
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
+await redisClient.connect();
+
+async function getTokenFromRedis() {
+  const token = await redisClient.get('google_drive_token');
+  if (!token) {
+    throw new Error('Token not found in Redis');
+  }
+  return JSON.parse(token);
+}
+
+async function saveTokenToRedis(token) {
+  await redisClient.set('google_drive_token', JSON.stringify(token));
+  console.log('Token stored to Redis');
+}
 
 async function authorize() {
   try {
@@ -18,11 +163,7 @@ async function authorize() {
     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
     try {
-      const tokenRaw = await fs.readFile(TOKEN_PATH);
-      if (!tokenRaw || tokenRaw.length === 0) {
-        throw new Error('Token file is empty');
-      }
-      const token = JSON.parse(tokenRaw);
+      const token = await getTokenFromRedis();
       oAuth2Client.setCredentials(token);
 
       // Automatically refresh the token if it's expired
@@ -30,7 +171,7 @@ async function authorize() {
         if (tokens.refresh_token) {
           // Save the new refresh token and access token
           const newToken = { ...token, ...tokens };
-          await fs.writeFile(TOKEN_PATH, JSON.stringify(newToken));
+          await saveTokenToRedis(newToken);
         }
       });
 
@@ -58,8 +199,9 @@ async function getAccessToken(oAuth2Client) {
   const code = await askQuestion('Enter the code from that page here: ');
   const { tokens } = await oAuth2Client.getToken(code);
   oAuth2Client.setCredentials(tokens);
-  await fs.writeFile(TOKEN_PATH, JSON.stringify(tokens));
-  console.log('Token stored to', TOKEN_PATH);
+  await saveTokenToRedis(tokens);
+  console.log('Token stored to Redis');
+  return oAuth2Client;
 }
 
 function askQuestion(query) {
